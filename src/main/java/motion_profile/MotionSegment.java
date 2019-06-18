@@ -1,3 +1,7 @@
+package motion_profile;
+
+import motion_profile.enums.SegmentType;
+
 public class MotionSegment {
 	private SegmentType segment;
 	private double t;

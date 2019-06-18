@@ -1,3 +1,5 @@
+package motion_profile;
+
 public class MotionFrame {
 	private double position;
 	private double velocity;
