@@ -1,11 +1,15 @@
+# Java
 
-.idea/vcs.xml
-.idea/workspace.xml
-*.class
-*.class
-*.lock
-*.bin
-.idea/workspace.xml
-.idea/uiDesigner.xml
-.idea/workspace.xml
-.idea/workspace.xml
+# Build
+build
+out
+
+# Gradle
+.gradle
+
+# IntelliJ
+.idea
+
+# MacOSX
+.DS_Store
+motion-profile-generator.iml
