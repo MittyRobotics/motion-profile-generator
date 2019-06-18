@@ -12,16 +12,16 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class Graph {
-	public Graph(final String title, double[][] points) {
+	public Graph(final String title, TrapazoidalMotionProfile motion_profile) {
 
 		final XYSeries velocity = new XYSeries("Velocity");
 		final XYSeries position = new XYSeries("Position");
 		final XYSeries acceleration = new XYSeries("Acceleration");
-		for(int i = 0; i < points.length; i++){
-			position.add(points[i][3], points[i][0]);
-			velocity.add(points[i][3], points[i][1]);
-			acceleration.add(points[i][3], points[i][2]);
-			//System.out.println(points[i][0] + " " + points[i][3]);
+		for(int i = 0; i < motion_profile.getSteps(); i++){
+			double t = motion_profile.stepsToTime(i);
+			position.add(t,motion_profile.getFrameAtTime(t).getPosition());
+			velocity.add(t, motion_profile.getFrameAtTime(t).getVelocity());
+			acceleration.add(t, motion_profile.getFrameAtTime(t).getAcceleration());
 		}
 		final XYSeriesCollection data = new XYSeriesCollection(velocity);
 		data.addSeries(position);
@@ -53,7 +53,7 @@ public class Graph {
 		slider1.setValue(10);
 		final JSlider slider2 = new JSlider(0, 10);
 		slider2.setMinimum(1);
-		slider2.setMaximum(1000);
+		slider2.setMaximum(200);
 		slider2.setValue(120);
 		Box p = new Box(BoxLayout.X_AXIS);
 
@@ -70,11 +70,12 @@ public class Graph {
 				velocity.clear();
 				position.clear();
 				acceleration.clear();
-				double[][] newOutput = Main.generateMotionProfile((double)slider1.getValue()/10,(double)slider.getValue()/10,200,(double)slider2.getValue()/10);
-				for( int i = 0; i < newOutput.length; i++){
-					velocity.add(newOutput[i][3], newOutput[i][1]);
-					position.add(newOutput[i][3], newOutput[i][0]);
-					acceleration.add(newOutput[i][3], newOutput[i][2]);
+				TrapazoidalMotionProfile newProfile = new TrapazoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), motion_profile.getSteps());
+				for(int i = 0; i < newProfile.getSteps(); i++){
+					double t = newProfile.stepsToTime(i);
+					position.add(t,newProfile.getFrameAtTime(t).getPosition());
+					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
+					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
 				}
 			}
 		});
@@ -86,11 +87,12 @@ public class Graph {
 				velocity.clear();
 				position.clear();
 				acceleration.clear();
-				double[][] newOutput = Main.generateMotionProfile((double)slider1.getValue()/10,(double)slider.getValue()/10,200,(double)slider2.getValue()/10);
-				for( int i = 0; i < newOutput.length; i++){
-					velocity.add(newOutput[i][3], newOutput[i][1]);
-					position.add(newOutput[i][3], newOutput[i][0]);
-					acceleration.add(newOutput[i][3], newOutput[i][2]);
+				TrapazoidalMotionProfile newProfile = new TrapazoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), motion_profile.getSteps());
+				for(int i = 0; i < newProfile.getSteps(); i++){
+					double t = newProfile.stepsToTime(i);
+					position.add(t,newProfile.getFrameAtTime(t).getPosition());
+					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
+					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
 				}
 			}
 		});
@@ -102,12 +104,12 @@ public class Graph {
 				velocity.clear();
 				position.clear();
 				acceleration.clear();
-				double[][] newOutput = Main.generateMotionProfile((double)slider1.getValue()/10,(double)slider.getValue()/10,200,(double)slider2.getValue()/10);
-				for( int i = 0; i < newOutput.length; i++){
-					velocity.add(newOutput[i][3], newOutput[i][1]);
-					position.add(newOutput[i][3], newOutput[i][0]);
-					acceleration.add(newOutput[i][3], newOutput[i][2]);
-
+				TrapazoidalMotionProfile newProfile = new TrapazoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), motion_profile.getSteps());
+				for(int i = 0; i < newProfile.getSteps(); i++){
+					double t = newProfile.stepsToTime(i);
+					position.add(t,newProfile.getFrameAtTime(t).getPosition());
+					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
+					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
 				}
 			}
 		});
