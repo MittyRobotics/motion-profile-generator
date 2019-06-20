@@ -1,4 +1,5 @@
-import motion_profile.TrapazoidalMotionProfile;
+
+import motion_profile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -12,7 +13,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class Graph {
-	public Graph(final String title, TrapazoidalMotionProfile motion_profile) {
+	public Graph(final String title, TrapezoidalMotionProfile motion_profile) {
 
 		final XYSeries velocity = new XYSeries("Velocity");
 		final XYSeries position = new XYSeries("Position");
@@ -70,7 +71,7 @@ public class Graph {
 				velocity.clear();
 				position.clear();
 				acceleration.clear();
-				TrapazoidalMotionProfile newProfile = new TrapazoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), motion_profile.getSteps());
+				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), 0.05);
 				for(int i = 0; i < newProfile.getSteps(); i++){
 					double t = newProfile.stepsToTime(i);
 					position.add(t,newProfile.getFrameAtTime(t).getPosition());
@@ -87,7 +88,7 @@ public class Graph {
 				velocity.clear();
 				position.clear();
 				acceleration.clear();
-				TrapazoidalMotionProfile newProfile = new TrapazoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), motion_profile.getSteps());
+				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(),0.05);
 				for(int i = 0; i < newProfile.getSteps(); i++){
 					double t = newProfile.stepsToTime(i);
 					position.add(t,newProfile.getFrameAtTime(t).getPosition());
