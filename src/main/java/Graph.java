@@ -105,7 +105,7 @@ public class Graph {
 				velocity.clear();
 				position.clear();
 				acceleration.clear();
-				TrapazoidalMotionProfile newProfile = new TrapazoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), motion_profile.getSteps());
+				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(),0.05);
 				for(int i = 0; i < newProfile.getSteps(); i++){
 					double t = newProfile.stepsToTime(i);
 					position.add(t,newProfile.getFrameAtTime(t).getPosition());
