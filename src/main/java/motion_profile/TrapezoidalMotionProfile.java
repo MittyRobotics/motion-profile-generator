@@ -15,7 +15,9 @@ public class TrapezoidalMotionProfile {
 	private double prevVelocity = 0;
 	private double prevTime = 0;
 
-	private boolean done = false;
+	private boolean finished = false;
+
+	private boolean reversed;
 
 	/**
 	 * Creates a TrapezoidalMotionProfile
@@ -26,11 +28,24 @@ public class TrapezoidalMotionProfile {
 	 * @param loopTime        time period between calculations
 	 */
 	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, double loopTime) {
+		new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, setpoint, loopTime, false);
+	}
+	/**
+	 * Creates a TrapezoidalMotionProfile
+	 *
+	 * @param maxAcceleration maximum acceleration
+	 * @param maxVelocity     maximum velocity
+	 * @param setpoint        distance traveled
+	 * @param loopTime        time period between calculations
+	 * @param reversed        whether or not the position output should be negative, resulting in a reversed movement
+	 */
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, double loopTime, boolean reversed) {
 
-		this.done = false;
+		this.finished = false;
 		this.maxAcceleration = maxAcceleration;
 		this.setpoint = setpoint;
 		this.loopTime = loopTime;
+		this.reversed = reversed;
 
 
 		double theoreticalTTotal = Math.sqrt(setpoint / maxAcceleration);
@@ -82,10 +97,16 @@ public class TrapezoidalMotionProfile {
 		this.prevVelocity = velocity;
 		this.prevTime = t;
 		if (t >= tTotal) {
-			done = true;
+			finished = true;
 			return new MotionFrame(setpoint, 0, 0, tTotal);
 		}
-		return new MotionFrame(position, velocity, acceleration, t);
+		if(reversed){
+			return new MotionFrame(-position, velocity, acceleration, t);
+		}
+		else{
+			return new MotionFrame(position, velocity, acceleration, t);
+		}
+
 	}
 
 	private double getVelocityAtTime(double _t, double _acceleration, double _maxVelocity, MotionSegment _accelerationSegment, MotionSegment _cruiseSegment) {
@@ -155,7 +176,8 @@ public class TrapezoidalMotionProfile {
 		return prevTime;
 	}
 
-	public boolean isDone() {
-		return done;
+	public boolean isFinished() {
+		return finished;
 	}
 }
+
