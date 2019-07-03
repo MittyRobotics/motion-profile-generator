@@ -14,6 +14,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class Graph {
+
+
+
 	public Graph(final String title, TrapezoidalMotionProfile motion_profile) {
 
 		final XYSeries velocity = new XYSeries("Velocity");

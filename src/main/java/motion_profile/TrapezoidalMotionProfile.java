@@ -7,6 +7,7 @@ public class TrapezoidalMotionProfile {
 
 	private double maxAcceleration;
 	private double maxVelocity;
+	private double startPoint;
 	private double setpoint;
 	private int steps;
 	private double loopTime;
@@ -19,6 +20,8 @@ public class TrapezoidalMotionProfile {
 
 	private boolean reversed;
 
+
+
 	/**
 	 * Creates a TrapezoidalMotionProfile
 	 *
@@ -28,8 +31,22 @@ public class TrapezoidalMotionProfile {
 	 * @param loopTime        time period between calculations
 	 */
 	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, double loopTime) {
-		new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, setpoint, loopTime, false);
+		this(maxAcceleration, maxVelocity, 0, setpoint, loopTime, false);
 	}
+
+	/**
+	 * Creates a TrapezoidalMotionProfile
+	 *
+	 * @param maxAcceleration maximum acceleration
+	 * @param maxVelocity     maximum velocity
+	 * @param startPoint      the starting point of the motion profile.
+	 * @param setpoint        distance traveled
+	 * @param loopTime        time period between calculations
+	 */
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double startPoint, double setpoint, double loopTime) {
+		this(maxAcceleration, maxVelocity, startPoint, setpoint, loopTime, false);
+	}
+
 	/**
 	 * Creates a TrapezoidalMotionProfile
 	 *
@@ -40,9 +57,23 @@ public class TrapezoidalMotionProfile {
 	 * @param reversed        whether or not the position output should be negative, resulting in a reversed movement
 	 */
 	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, double loopTime, boolean reversed) {
+		this(maxAcceleration, maxVelocity, 0, setpoint, loopTime, reversed);
+	}
+
+	/**
+	 * Creates a TrapezoidalMotionProfile
+	 *
+	 * @param maxAcceleration maximum acceleration
+	 * @param maxVelocity     maximum velocity
+	 * @param setpoint        distance traveled
+	 * @param loopTime        time period between calculations
+	 * @param reversed        whether or not the position output should be negative, resulting in a reversed movement
+	 */
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity,  double startPoint, double setpoint, double loopTime, boolean reversed) {
 
 		this.finished = false;
 		this.maxAcceleration = maxAcceleration;
+		this.startPoint = startPoint;
 		this.setpoint = setpoint;
 		this.loopTime = loopTime;
 		this.reversed = reversed;
@@ -98,13 +129,13 @@ public class TrapezoidalMotionProfile {
 		this.prevTime = t;
 		if (t >= tTotal) {
 			finished = true;
-			return new MotionFrame(setpoint, 0, 0, tTotal);
+			return new MotionFrame(startPoint+setpoint, 0, 0, tTotal);
 		}
 		if(reversed){
-			return new MotionFrame(-position, velocity, acceleration, t);
+			return new MotionFrame(startPoint-position, velocity, acceleration, t);
 		}
 		else{
-			return new MotionFrame(position, velocity, acceleration, t);
+			return new MotionFrame(startPoint + position, velocity, acceleration, t);
 		}
 
 	}
