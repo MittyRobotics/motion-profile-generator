@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = "com.github.OLeather"
+group = "com.github.MittyRobotics"
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
