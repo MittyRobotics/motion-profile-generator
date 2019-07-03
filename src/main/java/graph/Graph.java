@@ -1,3 +1,4 @@
+package graph;
 
 import motion_profile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
