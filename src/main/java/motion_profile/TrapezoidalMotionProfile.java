@@ -74,7 +74,11 @@ public class TrapezoidalMotionProfile {
 		this.finished = false;
 		this.maxAcceleration = maxAcceleration;
 		this.startPoint = startPoint;
-		this.setpoint = setpoint;
+		this.setpoint = startPoint-setpoint;
+		if(this.setpoint < 0){
+			this.reversed = true;
+			this.setpoint = Math.abs(this.setpoint);
+		}
 		this.loopTime = loopTime;
 		this.reversed = reversed;
 
