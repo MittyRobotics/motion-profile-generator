@@ -81,3 +81,7 @@ boolean reversed = false; //If output should be reversed for moving backwards
 TrapezoidalMotionProfile motionProfile = new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, currentPosition, setpoint, loopTime, reversed);
 ```
 You can follow the Feed-Forward values with your method of choice. For a mechanism such as a slider or linear lift, a good way to following the motion profile is to update the setpoint of a PID loop on the motors with the Feed-Forward position value at the specified looptime you gave the motion profile object.
+
+To check if the motion profile is finished, check for ``` motionProfile.isFinished();``` This will return true if the time input into the motion profile is greater than the total calculated time of the motion profile. That will tell you that the feed-forward position is equal to final position. You may still want to continue the PID loop after the motion profile is finished, however, because the feed-forward value is only the setpoint, and the mechanism still needs to follow that value. 
+
+A good way to check if it is finished is to have an ```&&``` statement to check for both the motion profile isFinished() and the sensor position is within a certain threshold of the setpoint to make sure the mechanism has finished moving to the setpoint.
