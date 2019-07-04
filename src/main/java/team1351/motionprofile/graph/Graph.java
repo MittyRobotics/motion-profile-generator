@@ -1,6 +1,6 @@
-package graph;
+package team1351.motionprofile.graph;
 
-import motion_profile.TrapezoidalMotionProfile;
+import team1351.motionprofile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

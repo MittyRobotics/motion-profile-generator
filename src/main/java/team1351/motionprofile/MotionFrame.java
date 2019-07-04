@@ -1,4 +1,4 @@
-package motion_profile;
+package team1351.motionprofile;
 
 
 public class MotionFrame {
