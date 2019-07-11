@@ -22,7 +22,7 @@ allprojects {
 Add the dependency:
 ```python
 dependencies {
-    implementation 'com.github.Mittyrobotics:motion-profile-generator:ENTER_LATEST_VERSION_HERE'
+    compile 'com.github.Mittyrobotics:motion-profile-generator:ENTER_LATEST_VERSION_HERE'
 }
 ```
 Replace ENTER_LATEST_VERSION_HERE with the latest version shown on the badge at the top of the README.
