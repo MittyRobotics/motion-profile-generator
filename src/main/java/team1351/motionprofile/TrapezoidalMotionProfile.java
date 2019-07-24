@@ -133,7 +133,12 @@ public class TrapezoidalMotionProfile {
 		this.prevTime = t;
 		if (t >= tTotal) {
 			finished = true;
-			return new MotionFrame(startPoint+setpoint, 0, 0, tTotal);
+			if(reversed){
+				return new MotionFrame(startPoint-setpoint, 0, 0, tTotal);
+			}
+			else{return new MotionFrame(startPoint+setpoint, 0, 0, tTotal);
+
+			}
 		}
 		if(reversed){
 			return new MotionFrame(startPoint-position, velocity, acceleration, t);
