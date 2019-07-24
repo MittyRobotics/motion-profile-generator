@@ -79,17 +79,18 @@ public class TrapezoidalMotionProfile {
 			this.reversed = true;
 			this.setpoint = Math.abs(this.setpoint);
 		}
+		System.out.println("setpoint: " + this.setpoint);
 		this.loopTime = loopTime;
 		this.reversed = reversed;
 
 
-		double theoreticalTTotal = Math.sqrt(setpoint / maxAcceleration);
+		double theoreticalTTotal = Math.sqrt(this.setpoint / maxAcceleration);
 		double theoreticalMaxVelocity = theoreticalTTotal * maxAcceleration;
 		double tAccel = maxVelocity / maxAcceleration;
 		double tDecel = maxVelocity / maxAcceleration;
 		double dAccel = maxVelocity * tAccel / 2;
 		double dDecel = maxVelocity * tDecel / 2;
-		double dCruise = setpoint - dAccel - dDecel;
+		double dCruise = this.setpoint - dAccel - dDecel;
 		double tCruise = dCruise / maxVelocity;
 		double tTotal = tAccel + tDecel + tCruise;
 		double newMaxVelocity = maxVelocity;
