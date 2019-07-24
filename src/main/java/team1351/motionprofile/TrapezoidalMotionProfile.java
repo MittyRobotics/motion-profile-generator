@@ -75,16 +75,16 @@ public class TrapezoidalMotionProfile {
 		this.maxAcceleration = maxAcceleration;
 		this.startPoint = startPoint;
 		this.setpoint = setpoint-startPoint;
-		System.out.println("setpoint: " + this.setpoint);
+		//System.out.println("setpoint: " + this.setpoint);
 		if(this.setpoint < 0){
-			System.out.println("sdf");
+			//System.out.println("sdf");
 			this.reversed = true;
 			this.setpoint = Math.abs(this.setpoint);
 		}
 		if(this.setpoint == 0){
 			finished = true;
 		}
-		System.out.println("setpoint: " + this.setpoint);
+		//System.out.println("setpoint: " + this.setpoint);
 		this.loopTime = loopTime;
 
 
@@ -146,11 +146,11 @@ public class TrapezoidalMotionProfile {
 			}
 		}
 		if(reversed){
-			System.out.println(position+ "" + reversed);
+			//System.out.println(position+ "" + reversed);
 			return new MotionFrame(startPoint-position, velocity, acceleration, t);
 		}
 		else{
-			System.out.println(position + "" + reversed);
+			//System.out.println(position + "" + reversed);
 			return new MotionFrame(position + startPoint, velocity, acceleration, t);
 		}
 
