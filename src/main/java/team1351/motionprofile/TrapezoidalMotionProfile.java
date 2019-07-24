@@ -74,14 +74,18 @@ public class TrapezoidalMotionProfile {
 		this.finished = false;
 		this.maxAcceleration = maxAcceleration;
 		this.startPoint = startPoint;
-		this.setpoint = startPoint-setpoint;
+		this.setpoint = setpoint-startPoint;
+		System.out.println("setpoint: " + this.setpoint);
 		if(this.setpoint < 0){
+			System.out.println("sdf");
 			this.reversed = true;
 			this.setpoint = Math.abs(this.setpoint);
 		}
+		if(this.setpoint == 0){
+			finished = true;
+		}
 		System.out.println("setpoint: " + this.setpoint);
 		this.loopTime = loopTime;
-		this.reversed = reversed;
 
 
 		double theoreticalTTotal = Math.sqrt(this.setpoint / maxAcceleration);
@@ -135,17 +139,19 @@ public class TrapezoidalMotionProfile {
 		if (t >= tTotal) {
 			finished = true;
 			if(reversed){
-				return new MotionFrame(startPoint-setpoint, 0, 0, tTotal);
+				return new MotionFrame(setpoint-startPoint, 0, 0, tTotal);
 			}
-			else{return new MotionFrame(startPoint+setpoint, 0, 0, tTotal);
+			else{return new MotionFrame(setpoint+startPoint, 0, 0, tTotal);
 
 			}
 		}
 		if(reversed){
+			System.out.println(position+ "" + reversed);
 			return new MotionFrame(startPoint-position, velocity, acceleration, t);
 		}
 		else{
-			return new MotionFrame(startPoint + position, velocity, acceleration, t);
+			System.out.println(position + "" + reversed);
+			return new MotionFrame(position + startPoint, velocity, acceleration, t);
 		}
 
 	}
