@@ -22,7 +22,7 @@ public class Graph {
 		final XYSeries velocity = new XYSeries("Velocity");
 		final XYSeries position = new XYSeries("Position");
 		final XYSeries acceleration = new XYSeries("Acceleration");
-		for(int i = 0; i < motion_profile.getSteps(); i++){
+		for(int i = 0; i < motion_profile.getSteps()+1; i++){
 			double t = motion_profile.stepsToTime(i);
 			position.add(t,motion_profile.getFrameAtTime(t).getPosition());
 			velocity.add(t, motion_profile.getFrameAtTime(t).getVelocity());

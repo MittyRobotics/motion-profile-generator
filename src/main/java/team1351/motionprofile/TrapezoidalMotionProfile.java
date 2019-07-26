@@ -139,10 +139,10 @@ public class TrapezoidalMotionProfile {
 		if (t >= tTotal) {
 			finished = true;
 			if(reversed){
-				return new MotionFrame(setpoint-startPoint, 0, 0, tTotal);
+				return new MotionFrame(startPoint-position, 0, 0, t);
 			}
-			else{return new MotionFrame(setpoint+startPoint, 0, 0, tTotal);
-
+			else{
+				return new MotionFrame(position + startPoint, 0, 0, t);
 			}
 		}
 		if(reversed){
