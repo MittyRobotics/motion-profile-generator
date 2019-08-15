@@ -1,6 +1,6 @@
-package team1351.motionprofile.graph;
+package com.amhsrobotics.motionprofile.graph;
 
-import team1351.motionprofile.TrapezoidalMotionProfile;
+import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
 
 public class test {
     public static void main(String... args){

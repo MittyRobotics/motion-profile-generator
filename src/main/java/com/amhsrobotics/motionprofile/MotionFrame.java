@@ -1,4 +1,4 @@
-package team1351.motionprofile;
+package com.amhsrobotics.motionprofile;
 
 
 public class MotionFrame {
