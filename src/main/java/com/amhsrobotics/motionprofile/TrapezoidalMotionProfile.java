@@ -7,6 +7,8 @@ public class TrapezoidalMotionProfile {
 
 	private double maxAcceleration;
 	private double maxVelocity;
+	private double startVelocity;
+	private double endVelocity;
 	private double startPoint;
 	private double setpoint;
 	private int steps;
@@ -120,6 +122,59 @@ public class TrapezoidalMotionProfile {
 		decelerationSegment = new MotionSegment(tDecel, dDecel);
 	}
 
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity,  double startPoint, double setpoint, double startVelocity, double endVelocity, double loopTime, boolean reversed) {
+
+		this.finished = false;
+		this.maxAcceleration = maxAcceleration;
+		this.startPoint = startPoint;
+		this.setpoint = setpoint-startPoint;
+		this.startVelocity = startVelocity;
+		this.endVelocity = endVelocity;
+		//System.out.println("setpoint: " + this.setpoint);
+		if(this.setpoint < 0){
+			//System.out.println("sdf");
+			this.reversed = true;
+			this.setpoint = Math.abs(this.setpoint);
+		}
+		if(this.setpoint == 0){
+			finished = true;
+		}
+		//System.out.println("setpoint: " + this.setpoint);
+		this.loopTime = loopTime;
+
+
+		double theoreticalTTotal = Math.sqrt(this.setpoint / maxAcceleration);
+		double theoreticalMaxVelocity = theoreticalTTotal * maxAcceleration;
+		double tAccel = (maxVelocity- startVelocity) / maxAcceleration;
+		double tDecel = (maxVelocity- endVelocity) / maxAcceleration;
+		double dAccel = maxVelocity  * tAccel / 2;
+		double dDecel = maxVelocity * tDecel / 2;
+		double dCruise = this.setpoint - dAccel - dDecel;
+		double tCruise = dCruise / maxVelocity;
+		double tTotal = tAccel + tDecel + tCruise;
+		double newMaxVelocity = maxVelocity;
+
+		if ((dCruise <= 0 && maxAcceleration > 0) || (dCruise >= 0 && maxAcceleration < 0) || maxVelocity == 0) {
+			tAccel = theoreticalMaxVelocity / maxAcceleration;
+			tDecel = theoreticalMaxVelocity / maxAcceleration;
+			dAccel = theoreticalMaxVelocity * tAccel / 2;
+			dDecel = theoreticalMaxVelocity * tDecel / 2;
+			tCruise = 0;
+			dCruise = 0;
+			newMaxVelocity = theoreticalMaxVelocity;
+			tTotal = tAccel + tDecel;
+		}
+
+		this.steps = (int) (tTotal / loopTime);
+
+		this.maxVelocity = newMaxVelocity;
+		this.tTotal = tTotal;
+
+		accelerationSegment = new MotionSegment(tAccel, dAccel);
+		cruiseSegment = new MotionSegment(tCruise, dCruise);
+		decelerationSegment = new MotionSegment(tDecel, dDecel);
+	}
+
 	public double stepsToTime(int _steps) {
 		return tTotal / steps * _steps;
 	}
@@ -139,10 +194,10 @@ public class TrapezoidalMotionProfile {
 		if (t >= tTotal) {
 			finished = true;
 			if(reversed){
-				return new MotionFrame(startPoint-position, 0, 0, t);
+				return new MotionFrame(startPoint-position, velocity, acceleration, t);
 			}
 			else{
-				return new MotionFrame(position + startPoint, 0, 0, t);
+				return new MotionFrame(position + startPoint, velocity, acceleration, t);
 			}
 		}
 		if(reversed){
@@ -162,11 +217,13 @@ public class TrapezoidalMotionProfile {
 		double _tAccel = _accelerationSegment.getT();
 		double _tCruise = _cruiseSegment.getT();
 		if (_t < _tAccel) {
-			output = _t * _acceleration;
+			output = _t * _acceleration + startVelocity;
 		} else if (_t < _tCruise + _tAccel) {
 			output = _maxVelocity;
-		} else {
-			output = _maxVelocity - (_t - _tAccel - _tCruise) * _acceleration;
+		}else if(_t >= tTotal){
+			output = endVelocity;
+		}else {
+			output = _maxVelocity - (_t - _tAccel - _tCruise) * _acceleration ;
 		}
 		return output;
 	}
