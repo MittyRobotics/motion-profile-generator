@@ -11,8 +11,6 @@ public class TrapezoidalMotionProfile {
 	private double endVelocity;
 	private double startPoint;
 	private double setpoint;
-	private int steps;
-	private double loopTime;
 	private double tTotal;
 
 	private double prevVelocity = 0;
@@ -23,71 +21,73 @@ public class TrapezoidalMotionProfile {
 	private boolean reversed;
 
 
-
 	/**
 	 * Creates a TrapezoidalMotionProfile
+	 * <p>
+	 * This motion profile is without a specified start point, meaning the setpoint is in relative position.
 	 *
 	 * @param maxAcceleration maximum acceleration
 	 * @param maxVelocity     maximum velocity
 	 * @param setpoint        distance traveled
-	 * @param loopTime        time period between calculations
 	 */
-	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, double loopTime) {
-		this(maxAcceleration, maxVelocity, 0, setpoint, loopTime, false);
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint) {
+		this(maxAcceleration, maxVelocity, 0, setpoint, false);
 	}
 
 	/**
 	 * Creates a TrapezoidalMotionProfile
+	 * <p>
+	 * This motion profile is with a start point, meaning the setpoint is in world position
 	 *
 	 * @param maxAcceleration maximum acceleration
 	 * @param maxVelocity     maximum velocity
 	 * @param startPoint      the starting point of the motion profile.
 	 * @param setpoint        distance traveled
-	 * @param loopTime        time period between calculations
 	 */
-	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double startPoint, double setpoint, double loopTime) {
-		this(maxAcceleration, maxVelocity, startPoint, setpoint, loopTime, false);
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double startPoint, double setpoint) {
+		this(maxAcceleration, maxVelocity, startPoint, setpoint, false);
 	}
 
 	/**
 	 * Creates a TrapezoidalMotionProfile
+	 * <p>
+	 * Reversed is normally automatically calculated, but there is an option to manually specify it if needed.
 	 *
 	 * @param maxAcceleration maximum acceleration
 	 * @param maxVelocity     maximum velocity
 	 * @param setpoint        distance traveled
-	 * @param loopTime        time period between calculations
 	 * @param reversed        whether or not the position output should be negative, resulting in a reversed movement
 	 */
-	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, double loopTime, boolean reversed) {
-		this(maxAcceleration, maxVelocity, 0, setpoint, loopTime, reversed);
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double setpoint, boolean reversed) {
+		this(maxAcceleration, maxVelocity, 0, setpoint, reversed);
 	}
 
 	/**
 	 * Creates a TrapezoidalMotionProfile
+	 * <p>
+	 * Reversed is normally automatically calculated, but there is an option to manually specify it if needed.
 	 *
 	 * @param maxAcceleration maximum acceleration
 	 * @param maxVelocity     maximum velocity
 	 * @param setpoint        distance traveled
-	 * @param loopTime        time period between calculations
+	 * @param startPoint      starting position of the mechanism (current position when initiating the motion profile)
 	 * @param reversed        whether or not the position output should be negative, resulting in a reversed movement
 	 */
-	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity,  double startPoint, double setpoint, double loopTime, boolean reversed) {
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double startPoint, double setpoint, boolean reversed) {
 
 		this.finished = false;
 		this.maxAcceleration = maxAcceleration;
 		this.startPoint = startPoint;
-		this.setpoint = setpoint-startPoint;
+		this.setpoint = setpoint - startPoint;
 		//System.out.println("setpoint: " + this.setpoint);
-		if(this.setpoint < 0){
+		if (this.setpoint < 0) {
 			//System.out.println("sdf");
 			this.reversed = true;
 			this.setpoint = Math.abs(this.setpoint);
 		}
-		if(this.setpoint == 0){
+		if (this.setpoint == 0) {
 			finished = true;
 		}
-		//System.out.println("setpoint: " + this.setpoint);
-		this.loopTime = loopTime;
 
 
 		double theoreticalTTotal = Math.sqrt(this.setpoint / maxAcceleration);
@@ -112,7 +112,6 @@ public class TrapezoidalMotionProfile {
 			tTotal = tAccel + tDecel;
 		}
 
-		this.steps = (int) (tTotal / loopTime);
 
 		this.maxVelocity = newMaxVelocity;
 		this.tTotal = tTotal;
@@ -122,32 +121,38 @@ public class TrapezoidalMotionProfile {
 		decelerationSegment = new MotionSegment(tDecel, dDecel);
 	}
 
-	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity,  double startPoint, double setpoint, double startVelocity, double endVelocity, double loopTime, boolean reversed) {
+	/**
+	 * Creates a TrapezoidalMotionProfile (experimental, do not use)
+	 *
+	 * @param maxAcceleration maximum acceleration
+	 * @param maxVelocity     maximum velocity
+	 * @param setpoint        distance traveled
+	 * @param reversed        whether or not the position output should be negative, resulting in a reversed movement
+	 */
+	public TrapezoidalMotionProfile(double maxAcceleration, double maxVelocity, double startPoint, double setpoint, double startVelocity, double endVelocity, boolean reversed) {
 
 		this.finished = false;
 		this.maxAcceleration = maxAcceleration;
 		this.startPoint = startPoint;
-		this.setpoint = setpoint-startPoint;
+		this.setpoint = setpoint - startPoint;
 		this.startVelocity = startVelocity;
 		this.endVelocity = endVelocity;
 		//System.out.println("setpoint: " + this.setpoint);
-		if(this.setpoint < 0){
+		if (this.setpoint < 0) {
 			//System.out.println("sdf");
 			this.reversed = true;
 			this.setpoint = Math.abs(this.setpoint);
 		}
-		if(this.setpoint == 0){
+		if (this.setpoint == 0) {
 			finished = true;
 		}
-		//System.out.println("setpoint: " + this.setpoint);
-		this.loopTime = loopTime;
 
 
 		double theoreticalTTotal = Math.sqrt(this.setpoint / maxAcceleration);
 		double theoreticalMaxVelocity = theoreticalTTotal * maxAcceleration;
-		double tAccel = (maxVelocity- startVelocity) / maxAcceleration;
-		double tDecel = (maxVelocity- endVelocity) / maxAcceleration;
-		double dAccel = maxVelocity  * tAccel / 2;
+		double tAccel = (maxVelocity - startVelocity) / maxAcceleration;
+		double tDecel = (maxVelocity - endVelocity) / maxAcceleration;
+		double dAccel = maxVelocity * tAccel / 2;
 		double dDecel = maxVelocity * tDecel / 2;
 		double dCruise = this.setpoint - dAccel - dDecel;
 		double tCruise = dCruise / maxVelocity;
@@ -165,7 +170,6 @@ public class TrapezoidalMotionProfile {
 			tTotal = tAccel + tDecel;
 		}
 
-		this.steps = (int) (tTotal / loopTime);
 
 		this.maxVelocity = newMaxVelocity;
 		this.tTotal = tTotal;
@@ -175,13 +179,6 @@ public class TrapezoidalMotionProfile {
 		decelerationSegment = new MotionSegment(tDecel, dDecel);
 	}
 
-	public double stepsToTime(int _steps) {
-		return tTotal / steps * _steps;
-	}
-
-	public double timeToSteps(double t) {
-		return t / (tTotal / steps);
-	}
 
 	public MotionFrame getFrameAtTime(double t) {
 
@@ -193,18 +190,16 @@ public class TrapezoidalMotionProfile {
 		this.prevTime = t;
 		if (t >= tTotal) {
 			finished = true;
-			if(reversed){
-				return new MotionFrame(startPoint-position, velocity, acceleration, t);
-			}
-			else{
+			if (reversed) {
+				return new MotionFrame(startPoint - position, velocity, acceleration, t);
+			} else {
 				return new MotionFrame(position + startPoint, velocity, acceleration, t);
 			}
 		}
-		if(reversed){
+		if (reversed) {
 			//System.out.println(position+ "" + reversed);
-			return new MotionFrame(startPoint-position, velocity, acceleration, t);
-		}
-		else{
+			return new MotionFrame(startPoint - position, velocity, acceleration, t);
+		} else {
 			//System.out.println(position + "" + reversed);
 			return new MotionFrame(position + startPoint, velocity, acceleration, t);
 		}
@@ -220,10 +215,10 @@ public class TrapezoidalMotionProfile {
 			output = _t * _acceleration + startVelocity;
 		} else if (_t < _tCruise + _tAccel) {
 			output = _maxVelocity;
-		}else if(_t >= tTotal){
+		} else if (_t >= tTotal) {
 			output = endVelocity;
-		}else {
-			output = _maxVelocity - (_t - _tAccel - _tCruise) * _acceleration ;
+		} else {
+			output = _maxVelocity - (_t - _tAccel - _tCruise) * _acceleration;
 		}
 		return output;
 	}
@@ -252,9 +247,6 @@ public class TrapezoidalMotionProfile {
 		return (_velocity - _prevVelocity) / (_t - _prevTime);
 	}
 
-	public int getSteps() {
-		return steps;
-	}
 
 	public double getSetpoint() {
 		return setpoint;

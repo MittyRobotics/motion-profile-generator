@@ -1,5 +1,6 @@
 package com.amhsrobotics.motionprofile.graph;
 
+import com.amhsrobotics.motionprofile.MotionFrame;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -17,22 +18,27 @@ public class Graph {
 
 
 
+
 	public Graph(final String title, TrapezoidalMotionProfile motion_profile) {
 
 		final XYSeries velocity = new XYSeries("Velocity");
 		final XYSeries position = new XYSeries("Position");
 		final XYSeries acceleration = new XYSeries("Acceleration");
-		for(int i = 0; i < motion_profile.getSteps()+1; i++){
-			double t = motion_profile.stepsToTime(i);
-			position.add(t,motion_profile.getFrameAtTime(t).getPosition());
-			velocity.add(t, motion_profile.getFrameAtTime(t).getVelocity());
-			acceleration.add(t, motion_profile.getFrameAtTime(t).getAcceleration());
+		double t = 0;
+
+		for(int i = 0; i < motion_profile.gettTotal()*100; i++){
+			t = (double)i / 100;
+			System.out.println(t + " " + motion_profile.gettTotal());
+			MotionFrame frame = motion_profile.getFrameAtTime(t);
+			position.add(t,frame.getPosition());
+			velocity.add(t, frame.getVelocity());
+			acceleration.add(t, frame.getAcceleration());
 		}
 		final XYSeriesCollection data = new XYSeriesCollection(velocity);
 		data.addSeries(position);
 		data.addSeries(acceleration);
 		final JFreeChart chart = ChartFactory.createXYLineChart(
-				"Motion Profile Test",
+				"Motion Profile Example",
 				"Time (seconds)",
 				"Velocity (ft/s), Position (ft), Acceleration (ft/s)",
 				data,
@@ -68,56 +74,56 @@ public class Graph {
 		p.add(slider1);
 		p.add(new JLabel("Setpoint:"));
 		p.add(slider2);
-		slider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				//System.out.println(velocity.getItemCount());
-				velocity.clear();
-				position.clear();
-				acceleration.clear();
-				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), 0.05);
-				for(int i = 0; i < newProfile.getSteps(); i++){
-					double t = newProfile.stepsToTime(i);
-					position.add(t,newProfile.getFrameAtTime(t).getPosition());
-					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
-					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
-				}
-			}
-		});
-
-		slider1.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				//System.out.println(velocity.getItemCount());
-				velocity.clear();
-				position.clear();
-				acceleration.clear();
-				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(),0.05);
-				for(int i = 0; i < newProfile.getSteps(); i++){
-					double t = newProfile.stepsToTime(i);
-					position.add(t,newProfile.getFrameAtTime(t).getPosition());
-					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
-					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
-				}
-			}
-		});
-
-		slider2.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				//System.out.println(velocity.getItemCount());
-				velocity.clear();
-				position.clear();
-				acceleration.clear();
-				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(),0.05);
-				for(int i = 0; i < newProfile.getSteps(); i++){
-					double t = newProfile.stepsToTime(i);
-					position.add(t,newProfile.getFrameAtTime(t).getPosition());
-					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
-					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
-				}
-			}
-		});
+//		slider.addChangeListener(new ChangeListener() {
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				//System.out.println(velocity.getItemCount());
+//				velocity.clear();
+//				position.clear();
+//				acceleration.clear();
+//				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(), 0.05);
+//				for(int i = 0; i < newProfile.getSteps(); i++){
+//					double t = newProfile.stepsToTime(i);
+//					position.add(t,newProfile.getFrameAtTime(t).getPosition());
+//					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
+//					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
+//				}
+//			}
+//		});
+//
+//		slider1.addChangeListener(new ChangeListener() {
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				//System.out.println(velocity.getItemCount());
+//				velocity.clear();
+//				position.clear();
+//				acceleration.clear();
+//				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(),0.05);
+//				for(int i = 0; i < newProfile.getSteps(); i++){
+//					double t = newProfile.stepsToTime(i);
+//					position.add(t,newProfile.getFrameAtTime(t).getPosition());
+//					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
+//					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
+//				}
+//			}
+//		});
+//
+//		slider2.addChangeListener(new ChangeListener() {
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				//System.out.println(velocity.getItemCount());
+//				velocity.clear();
+//				position.clear();
+//				acceleration.clear();
+//				TrapezoidalMotionProfile newProfile = new TrapezoidalMotionProfile(slider1.getValue(),slider.getValue(),slider2.getValue(),0.05);
+//				for(int i = 0; i < newProfile.getSteps(); i++){
+//					double t = newProfile.stepsToTime(i);
+//					position.add(t,newProfile.getFrameAtTime(t).getPosition());
+//					velocity.add(t, newProfile.getFrameAtTime(t).getVelocity());
+//					acceleration.add(t, newProfile.getFrameAtTime(t).getAcceleration());
+//				}
+//			}
+//		});
 
 		f.add(p, BorderLayout.SOUTH);
 		f.pack();
