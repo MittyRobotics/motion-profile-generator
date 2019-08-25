@@ -50,7 +50,7 @@ Replace ENTER_LATEST_VERSION_HERE with the latest version shown on the badge at 
 </details>
 
 ## Usage
-Create a new TrapezoidalMotionProfile object. Units are in whatever units your position setpoint is in. Units can be anything as long as they are consistant throughout all values passed into the motion profile.
+Create a new TrapezoidalMotionProfile object. Units are in whatever units your position setpoint is in. Units can be anything as long as they are consistent throughout all values passed into the motion profile.
 ```java
 double maxAcceleration = 2; //Maximum acceleration of mechanism (units/second^2)
 double maxVelocity = 5; //Maximum velocity of mechanism (units/second)
