@@ -55,10 +55,8 @@ Create a new TrapezoidalMotionProfile object. Units are in whatever units your p
 double maxAcceleration = 2; //Maximum acceleration of mechanism (units/second^2)
 double maxVelocity = 5; //Maximum velocity of mechanism (units/second)
 double setPoint = 12; //Setpoint for mechanism to move to (units)
-double loopTime = 0.02; //Timed Robot loop time (seconds)
-boolean reversed = false; //If output should be reversed for moving backwards
 
-TrapezoidalMotionProfile motionProfile = new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, setpoint, loopTime, reversed);
+TrapezoidalMotionProfile motionProfile = new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, setpoint);
 ```
 To get the output of the motion profile, keep track of the time in milliseconds since the begining of the motion profile following. Then get the MotionFrame at that time every time you want to update the motion profile.
 ```java
@@ -75,10 +73,7 @@ double maxAcceleration = 2; //Maximum acceleration of mechanism (units/second^2)
 double maxVelocity = 5; //Maximum velocity of mechanism (units/second)
 double currentPosition = 4; //The current position of the mechanism (units)
 double setPoint = 12; //Setpoint for mechanism to move to (units)
-double loopTime = 0.02; //Timed Robot loop time (seconds)
-boolean reversed = false; //If output should be reversed for moving backwards
-
-TrapezoidalMotionProfile motionProfile = new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, currentPosition, setpoint, loopTime, reversed);
+TrapezoidalMotionProfile motionProfile = new TrapezoidalMotionProfile(maxAcceleration, maxVelocity, currentPosition, setpoint);
 ```
 You can follow the Feed-Forward values with your method of choice. For a mechanism such as a slider or linear lift, a good way to following the motion profile is to update the setpoint of a PID loop on the motors with the Feed-Forward position value at the specified looptime you gave the motion profile object.
 
