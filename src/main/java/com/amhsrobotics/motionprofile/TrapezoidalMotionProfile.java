@@ -153,6 +153,12 @@ public class TrapezoidalMotionProfile {
         accelerationSegment = new MotionSegment(tAccel, dAccel, accelerationFunction);
         cruiseSegment = new MotionSegment(tCruise, dCruise, cruiseFunction);
         decelerationSegment = new MotionSegment(tDecel, dDecel, decelerationFunction);
+
+        if(maxAcceleration == 0 || maxDeceleration == 0){
+			accelerationSegment = new MotionSegment(0, 0, accelerationFunction);
+			cruiseSegment = new MotionSegment(0, 0, cruiseFunction);
+			decelerationSegment = new MotionSegment(0, 0, decelerationFunction);
+		}
     }
 
     /**
