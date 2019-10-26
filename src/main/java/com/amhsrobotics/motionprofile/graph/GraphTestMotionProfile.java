@@ -4,6 +4,9 @@ import com.amhsrobotics.motionprofile.datatypes.MechanismBounds;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
 import com.amhsrobotics.motionprofile.datatypes.VelocityConstraints;
 
+/**
+ * Testing motion profile class. This generates a test motion profile and graphs it.
+ */
 public class GraphTestMotionProfile {
     public static void main(String... args){
         //Mess around with these values and try to brake it! So far it has worked for every case I have tried. If you break it, please message Owen Leather with the values that broke it and a picture of the graph and I will try to fix.
