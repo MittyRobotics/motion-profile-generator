@@ -14,27 +14,45 @@ public class TrapezoidalMotionProfile {
 	private double startVelocity;
 	private double endVelocity;
 	private double maxVelocity;
-	private double startPoint;
+	private double startPosition;
+
+	private double minPosition;
+	private double maxPosition;
 	
 	private double prevTime;
 	private double prevVelocity;
-	
-	public TrapezoidalMotionProfile(double setpoint, double maxAcceleration, double maxDeceleration, double maxVelocity, double startVelocity, double endVelocity, double startPoint) {
+
+
+
+	private boolean isFinished;
+
+	public TrapezoidalMotionProfile(double setpoint, VelocityConstraints velocityConstraints) {
+		this(setpoint,velocityConstraints, new MechanismBounds(0,0,0));
+	}
+
+
+	public TrapezoidalMotionProfile(double setpoint, VelocityConstraints velocityConstraints, MechanismBounds mechanismBounds) {
+
+		setpoint = setpoint - mechanismBounds.getCurrentPosition();
+
 		if(setpoint < 0){
-			maxAcceleration = -maxAcceleration;
-			maxVelocity = -maxVelocity;
-			maxDeceleration = -maxDeceleration;
+			velocityConstraints.setMaxAcceleration(-velocityConstraints.getMaxAcceleration());
+			velocityConstraints.setMaxVelocity(-velocityConstraints.getMaxVelocity());
+			velocityConstraints.setMaxDeceleration(-velocityConstraints.getMaxDeceleration());
 		}
 		
-		this.maxAcceleration = maxAcceleration;
-		this.maxDeceleration = maxDeceleration;
-		this.startVelocity = startVelocity;
-		this.endVelocity = endVelocity;
-		this.maxVelocity = maxVelocity;
-		this.startPoint = startPoint;
+		this.maxAcceleration = velocityConstraints.getMaxAcceleration();
+		this.maxDeceleration = velocityConstraints.getMaxDeceleration();
+		this.startVelocity = velocityConstraints.getStartVelocity();
+		this.endVelocity = velocityConstraints.getEndVelocity();
+		this.maxVelocity = velocityConstraints.getMaxVelocity();
+		this.startPosition = mechanismBounds.getCurrentPosition();
+		this.minPosition = mechanismBounds.getMinPosition();
+		this.maxPosition = mechanismBounds.getMaxPosition();
 		this.setpoint = setpoint;
-		
-		
+
+
+
 		//Initial calculation
 		calculateMotionProfile();
 		
@@ -53,7 +71,8 @@ public class TrapezoidalMotionProfile {
 		//Adjusted setpoint calculation
 		calculateMotionProfile();
 	}
-	
+
+
 	private void calculateMotionProfile(){
 		
 		double theoreticalMaxVelocity = Math.sqrt((maxDeceleration*(startVelocity*startVelocity)+2*maxAcceleration*setpoint*maxDeceleration)/(maxAcceleration+maxDeceleration));
@@ -119,15 +138,26 @@ public class TrapezoidalMotionProfile {
 	}
 	
 	public MotionFrame getFrameAtTime(double t) {
-		
+
 		double velocity = getVelocityAtTime(t);
 		double position = getPositionAtTime(t);
 		double acceleration = getAccelerationAtTime(t, velocity);
-		
-		if (t >= tTotal) {
-			return new MotionFrame(position + startPoint, velocity, acceleration, t);
+
+
+		System.out.println(velocity + " " + position + " " + acceleration);
+
+		if(!(minPosition == 0 && maxPosition == 0)){
+			position = Math.min(position, maxPosition);
+			position = Math.max(position, minPosition);
+		}
+
+
+		isFinished = t <= tTotal;
+
+		if (t < tTotal) {
+			return new MotionFrame(position, velocity, acceleration, t);
 		} else {
-			return new MotionFrame(position + startPoint, velocity, acceleration, t);
+			return new MotionFrame(setpoint, endVelocity, acceleration, t);
 		}
 	}
 	
@@ -164,7 +194,7 @@ public class TrapezoidalMotionProfile {
 			output = IntegralMath.integral(f, t,decelerationSegment.getF()) + IntegralMath.integral(0,c,accelerationSegment.getF()) + IntegralMath.integral(c,f, cruiseSegment.getF());
 		}
 		
-		return output;
+		return output + startPosition;
 		
 	}
 	
@@ -232,12 +262,12 @@ public class TrapezoidalMotionProfile {
 		this.maxVelocity = maxVelocity;
 	}
 	
-	public double getStartPoint() {
-		return startPoint;
+	public double getStartPosition() {
+		return startPosition;
 	}
 	
-	public void setStartPoint(double startPoint) {
-		this.startPoint = startPoint;
+	public void setStartPosition(double startPosition) {
+		this.startPosition = startPosition;
 	}
 	
 	public MotionSegment getAccelerationSegment() {
@@ -272,5 +302,44 @@ public class TrapezoidalMotionProfile {
 		this.tTotal = tTotal;
 	}
 
+	public double getMinPosition() {
+		return minPosition;
+	}
+
+	public void setMinPosition(double minPosition) {
+		this.minPosition = minPosition;
+	}
+
+	public double getMaxPosition() {
+		return maxPosition;
+	}
+
+	public void setMaxPosition(double maxPosition) {
+		this.maxPosition = maxPosition;
+	}
+
+	public double getPrevTime() {
+		return prevTime;
+	}
+
+	public void setPrevTime(double prevTime) {
+		this.prevTime = prevTime;
+	}
+
+	public double getPrevVelocity() {
+		return prevVelocity;
+	}
+
+	public void setPrevVelocity(double prevVelocity) {
+		this.prevVelocity = prevVelocity;
+	}
+
+	public boolean isFinished() {
+		return isFinished;
+	}
+
+	public void setFinished(boolean finished) {
+		isFinished = finished;
+	}
 }
 
