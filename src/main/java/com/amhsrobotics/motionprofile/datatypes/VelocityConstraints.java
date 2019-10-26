@@ -8,9 +8,9 @@ public class VelocityConstraints {
 	private double endVelocity;
 	
 	public VelocityConstraints(double maxAcceleration, double maxDeceleration, double maxVelocity, double startVelocity, double endVelocity) {
-		this.maxAcceleration = maxAcceleration;
-		this.maxDeceleration = maxDeceleration;
-		this.maxVelocity = maxVelocity;
+		this.maxAcceleration = Math.abs(maxAcceleration);
+		this.maxDeceleration = Math.abs(maxDeceleration);
+		this.maxVelocity = Math.abs(maxVelocity);
 		this.startVelocity = startVelocity;
 		this.endVelocity = endVelocity;
 	}
