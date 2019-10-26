@@ -116,9 +116,24 @@ public class TrapezoidalMotionProfile {
 		this.maxVelocity = newMaxVelocity;
 		this.tTotal = tTotal;
 
-		accelerationSegment = new MotionSegment(tAccel, dAccel);
-		cruiseSegment = new MotionSegment(tCruise, dCruise);
-		decelerationSegment = new MotionSegment(tDecel, dDecel);
+		accelerationSegment = new MotionSegment(tAccel, dAccel, new Function() {
+			@Override
+			public double f(double x) {
+				return 0;
+			}
+		});
+		cruiseSegment = new MotionSegment(tCruise, dCruise,new Function() {
+			@Override
+			public double f(double x) {
+				return 0;
+			}
+		});
+		decelerationSegment = new MotionSegment(tDecel, dDecel,new Function() {
+			@Override
+			public double f(double x) {
+				return 0;
+			}
+		});
 	}
 
 	/**
@@ -174,9 +189,9 @@ public class TrapezoidalMotionProfile {
 		this.maxVelocity = newMaxVelocity;
 		this.tTotal = tTotal;
 
-		accelerationSegment = new MotionSegment(tAccel, dAccel);
-		cruiseSegment = new MotionSegment(tCruise, dCruise);
-		decelerationSegment = new MotionSegment(tDecel, dDecel);
+//		accelerationSegment = new MotionSegment(tAccel, dAccel);
+//		cruiseSegment = new MotionSegment(tCruise, dCruise);
+//		decelerationSegment = new MotionSegment(tDecel, dDecel);
 	}
 	public TrapezoidalMotionProfile(double setpoint, double maxAcceleration, double maxDeceleration, double startVelocity, double endVelocity, double maxVelocity, double startPoint){
 
@@ -221,9 +236,9 @@ public class TrapezoidalMotionProfile {
 		this.maxVelocity = newMaxVelocity;
 		this.tTotal = tTotal;
 
-		accelerationSegment = new MotionSegment(tAccel, dAccel);
-		cruiseSegment = new MotionSegment(tCruise, dCruise);
-		decelerationSegment = new MotionSegment(tDecel, dDecel);
+//		accelerationSegment = new MotionSegment(tAccel, dAccel);
+//		cruiseSegment = new MotionSegment(tCruise, dCruise);
+//		decelerationSegment = new MotionSegment(tDecel, dDecel);
 
 	}
 

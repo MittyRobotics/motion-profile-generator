@@ -15,136 +15,156 @@ public class NewTrapezoidalMotionProfile {
     private double endVelocity;
     private double maxVelocity;
     private double startPoint;
-
-
-    private double phaseOneEndVelocity;
-    private double phaseOneEndTime;
-    private double phaseTwoEndVelocity;
-    private double phaseTwoEndTime;
-    private double phaseThreeEndTime;
-    private double phaseThreeEndVelocity;
-    private double phaseFourEndTime;
-    private double phaseFourEndVelocity;
-
+    
     public NewTrapezoidalMotionProfile(double setpoint, double maxAcceleration, double maxDeceleration, double maxVelocity, double startVelocity, double endVelocity, double startPoint) {
-        this.setpoint = setpoint;
+        if(setpoint < 0){
+            maxAcceleration = -maxAcceleration;
+            maxVelocity = -maxVelocity;
+            maxDeceleration = -maxDeceleration;
+        }
+        
         this.maxAcceleration = maxAcceleration;
         this.maxDeceleration = maxDeceleration;
         this.startVelocity = startVelocity;
         this.endVelocity = endVelocity;
         this.maxVelocity = maxVelocity;
         this.startPoint = startPoint;
+        this.setpoint = setpoint;
 
-        double theoreticalTTotal = Math.sqrt(this.setpoint / maxAcceleration);
-        double theoreticalMaxVelocity = theoreticalTTotal * maxAcceleration;
+
+        //Initial calculation
+        calculateMotionProfile();
+    
+        
+        double c = accelerationSegment.getT();
+
+        double f = cruiseSegment.getT() + accelerationSegment.getT();
+        
+        double finalVelocity = IntegralMath.integral(f, tTotal,decelerationSegment.getF()) + IntegralMath.integral(0,c,accelerationSegment.getF()) + IntegralMath.integral(c,f, cruiseSegment.getF());
+        System.out.println(finalVelocity);
+        
+        double setpointDifference = setpoint - finalVelocity;
+        
+        this.setpoint = setpoint + setpointDifference;
+        
+        //Adjusted setpoint calculation
+        calculateMotionProfile();
+    }
+    
+    private void calculateMotionProfile(){
+
+        double theoreticalMaxVelocity = Math.sqrt((maxDeceleration*(startVelocity*startVelocity)+2*maxAcceleration*setpoint*maxDeceleration)/(maxAcceleration+maxDeceleration));
+        
         double tAccel = (maxVelocity - startVelocity) / maxAcceleration;
         double tDecel = (maxVelocity - endVelocity) / maxDeceleration;
         double dAccel = maxVelocity * tAccel / 2;
         double dDecel = maxVelocity * tDecel / 2;
-        double dCruise = this.setpoint - dAccel - dDecel;
+    
+        double dCruise = this.setpoint - dAccel  - dDecel;
         double tCruise = dCruise / maxVelocity;
+    
         double tTotal = tAccel + tDecel + tCruise;
-        double newMaxVelocity = maxVelocity;
-
+        double dTotal = dAccel + dCruise + dDecel;
+        
         if ((dCruise <= 0 && maxAcceleration > 0) || (dCruise >= 0 && maxAcceleration < 0) || maxVelocity == 0) {
-            tAccel = theoreticalMaxVelocity / maxAcceleration;
-            tDecel = theoreticalMaxVelocity / maxAcceleration;
-            dAccel = theoreticalMaxVelocity * tAccel / 2;
-            dDecel = theoreticalMaxVelocity * tDecel / 2;
-            tCruise = 0;
-            dCruise = 0;
-            newMaxVelocity = theoreticalMaxVelocity;
-            tTotal = tAccel + tDecel;
+            this.maxVelocity = theoreticalMaxVelocity - 0.001;
+            tAccel = (maxVelocity - startVelocity) / maxAcceleration;
+            tDecel = (maxVelocity - endVelocity) / maxDeceleration;
+            dAccel = maxVelocity * tAccel / 2;
+            dDecel = maxVelocity * tDecel / 2;
+    
+            dCruise = this.setpoint - dAccel  - dDecel;
+            tCruise = dCruise / maxVelocity;
+    
+            tTotal = tAccel + tDecel + tCruise;
+            dTotal = dAccel + dCruise + dDecel;
+    
         }
-
-
-        this.maxVelocity = newMaxVelocity;
+        
         this.tTotal = tTotal;
-
-        accelerationSegment = new MotionSegment(tAccel, dAccel);
-        cruiseSegment = new MotionSegment(tCruise, dCruise);
-        decelerationSegment = new MotionSegment(tDecel, dDecel);
-
+    
+    
+        double d = maxVelocity;
+        double a = startVelocity;
+        double c = tAccel;
+        double h = endVelocity;
+        double g = tTotal;
+        double f = tCruise + tAccel;
+    
+        Function accelerationFunction = new Function() {
+            @Override
+            public double f(double x) {
+                return ((d-a)/c)*x + a;
+            }
+        };
+        Function cruiseFunction = new Function() {
+            @Override
+            public double f(double x) {
+                return d;
+            }
+        };
+        Function decelerationFunction = new Function() {
+            @Override
+            public double f(double x) {
+                return (h-d)/(g-f) * (x-f) + d;
+            }
+        };
+    
+        accelerationSegment = new MotionSegment(tAccel, dAccel,accelerationFunction);
+        cruiseSegment = new MotionSegment(tCruise, dCruise,cruiseFunction);
+        decelerationSegment = new MotionSegment(tDecel, dDecel,decelerationFunction);
     }
 
     public MotionFrame getFrameAtTime(double t) {
 
-        double velocity = getVelocityAtTime(t, maxAcceleration, maxVelocity, accelerationSegment, cruiseSegment);
-        double position = getPositionAtTime(t, velocity, maxVelocity, accelerationSegment, cruiseSegment);
+        double velocity = getVelocityAtTime(t);
+        double position = getPositionAtTime(t);
 
         if (t >= tTotal) {
             return new MotionFrame(position + startPoint, velocity, 0, t);
         } else {
-            //System.out.println(position + "" + reversed);
             return new MotionFrame(position + startPoint, velocity, 0, t);
         }
     }
 
 
-    private double getVelocityAtTime(double _t, double _acceleration, double _maxVelocity, MotionSegment _accelerationSegment, MotionSegment _cruiseSegment) {
+    private double getVelocityAtTime(double t) {
         double output;
-
-        double _tAccel = _accelerationSegment.getT();
-        double _tCruise = _cruiseSegment.getT();
-        if (_t < _tAccel) {
-            output = _t * _acceleration + startVelocity;
-        } else if (_t < _tCruise + _tAccel) {
-            output = _maxVelocity;
-        } else if (_t >= tTotal) {
+        
+        if (t < accelerationSegment.getT()) {
+            output = t * maxAcceleration + startVelocity;
+        } else if (t < cruiseSegment.getT() + accelerationSegment.getT()) {
+            output = maxVelocity;
+        } else if (t >= tTotal) {
             output = endVelocity;
         } else {
-            output = _maxVelocity - (_t - _tAccel - _tCruise) * _acceleration;
+            output = maxVelocity - (t - accelerationSegment.getT() - cruiseSegment.getT()) * maxDeceleration;
         }
         return output;
     }
-
-    private double getPositionAtTime(double _t, double _velocity, double _maxVelocity, MotionSegment _accelerationSegment, MotionSegment _cruiseSegment) {
+    
+    
+    private double getPositionAtTime(double t) {
         double output = 0;
-        double _tAccel = _accelerationSegment.getT();
-        double _dAccel = _accelerationSegment.getDistance();
-        double _tCruise = _cruiseSegment.getT();
-        double _dCruise = _cruiseSegment.getDistance();
+        
+        double c = accelerationSegment.getT();
+        double f = cruiseSegment.getT() + accelerationSegment.getT();
+    
+        if(t <= accelerationSegment.getT()){
+            output = IntegralMath.integral(0, t,accelerationSegment.getF());
+        }
+        else if(t <= cruiseSegment.getT() +  accelerationSegment.getT()){
+            output = IntegralMath.integral(c, t,cruiseSegment.getF()) + IntegralMath.integral(0,c,accelerationSegment.getF());
+        }
+        else{
+            output = IntegralMath.integral(f, t,decelerationSegment.getF()) + IntegralMath.integral(0,c,accelerationSegment.getF()) + IntegralMath.integral(c,f, cruiseSegment.getF());
+        }
 
-        System.out.println(_tAccel + " " + _dAccel + " " + _tCruise + " " + _dCruise);
-
-        //Phase 1
-        if (_t <= _tAccel && _velocity <= 0) {
-            output = _velocity * _t;
-            output += (startVelocity - _velocity) * _t / 2;
-            phaseOneEndVelocity = output;
-            phaseOneEndTime = _t;
-        }
-        //Phase 2
-        else if (_t <= _tAccel && _velocity >= 0) {
-            output =  ((_t- phaseOneEndTime) * _velocity / 2)+ phaseOneEndVelocity;
-            phaseTwoEndVelocity = output;
-            phaseTwoEndTime = _t;
-        }
-        //Phase 3
-        else if (_t <= _tAccel + _tCruise) {
-            output = phaseTwoEndVelocity;
-            output += _maxVelocity * (_t - _tAccel);
-            phaseThreeEndVelocity = output;
-            phaseThreeEndTime = _t;
-        }
-        //Phase 4
-        if (_t >= _tCruise + _tAccel && _velocity >= 0) {
-            output = phaseThreeEndVelocity;
-            output += _velocity * (_t - phaseThreeEndTime);
-            output += (_maxVelocity - _velocity) * (_t - phaseThreeEndTime) / 2;
-            phaseFourEndVelocity = output;
-            phaseFourEndTime = _t;
-        }
-        //Phase 5
-        else if (_t >= _tCruise && _velocity <= 0) {
-            System.out.println(_t - phaseFourEndTime + " d " + phaseFourEndTime);
-            output =  ((_t- phaseFourEndTime) * _velocity / 2)+ phaseFourEndVelocity;
-        }
         return output;
-
+        
     }
-
-
+    
+    
     public double getSetpoint() {
         return setpoint;
     }
@@ -232,68 +252,6 @@ public class NewTrapezoidalMotionProfile {
     public void settTotal(double tTotal) {
         this.tTotal = tTotal;
     }
-    public double getPhaseOneEndVelocity() {
-        return phaseOneEndVelocity;
-    }
 
-    public void setPhaseOneEndVelocity(double phaseOneEndVelocity) {
-        this.phaseOneEndVelocity = phaseOneEndVelocity;
-    }
-
-    public double getPhaseOneEndTime() {
-        return phaseOneEndTime;
-    }
-
-    public void setPhaseOneEndTime(double phaseOneEndTime) {
-        this.phaseOneEndTime = phaseOneEndTime;
-    }
-
-    public double getPhaseTwoEndVelocity() {
-        return phaseTwoEndVelocity;
-    }
-
-    public void setPhaseTwoEndVelocity(double phaseTwoEndVelocity) {
-        this.phaseTwoEndVelocity = phaseTwoEndVelocity;
-    }
-
-    public double getPhaseTwoEndTime() {
-        return phaseTwoEndTime;
-    }
-
-    public void setPhaseTwoEndTime(double phaseTwoEndTime) {
-        this.phaseTwoEndTime = phaseTwoEndTime;
-    }
-
-    public double getPhaseThreeEndTime() {
-        return phaseThreeEndTime;
-    }
-
-    public void setPhaseThreeEndTime(double phaseThreeEndTime) {
-        this.phaseThreeEndTime = phaseThreeEndTime;
-    }
-
-    public double getPhaseThreeEndVelocity() {
-        return phaseThreeEndVelocity;
-    }
-
-    public void setPhaseThreeEndVelocity(double phaseThreeEndVelocity) {
-        this.phaseThreeEndVelocity = phaseThreeEndVelocity;
-    }
-
-    public double getPhaseFourEndTime() {
-        return phaseFourEndTime;
-    }
-
-    public void setPhaseFourEndTime(double phaseFourEndTime) {
-        this.phaseFourEndTime = phaseFourEndTime;
-    }
-
-    public double getPhaseFourEndVelocity() {
-        return phaseFourEndVelocity;
-    }
-
-    public void setPhaseFourEndVelocity(double phaseFourEndVelocity) {
-        this.phaseFourEndVelocity = phaseFourEndVelocity;
-    }
 }
 
