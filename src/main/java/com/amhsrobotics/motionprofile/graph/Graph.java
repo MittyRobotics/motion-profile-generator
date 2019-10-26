@@ -1,11 +1,14 @@
 package com.amhsrobotics.motionprofile.graph;
 
 import com.amhsrobotics.motionprofile.MotionFrame;
+import com.amhsrobotics.motionprofile.NewTrapezoidalMotionProfile;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -19,21 +22,21 @@ public class Graph {
 
 
 
-	public Graph(final String title, TrapezoidalMotionProfile motion_profile) {
+	public Graph(final String title, NewTrapezoidalMotionProfile motion_profile) {
 
-		final XYSeries velocity = new XYSeries("Velocity");
-		final XYSeries position = new XYSeries("Position");
-		final XYSeries acceleration = new XYSeries("Acceleration");
+		final XYSeries velocity = new XYSeries("Velocity",false);
+		final XYSeries position = new XYSeries("Position",false);
+		final XYSeries acceleration = new XYSeries("Acceleration",false);
 		double t = 0;
-
-		for(int i = 0; i < motion_profile.gettTotal()*100; i++){
-			t = (double)i / 100;
-			System.out.println(t + " " + motion_profile.gettTotal());
-			MotionFrame frame = motion_profile.getFrameAtTime(t);
-			position.add(t,frame.getPosition());
-			velocity.add(t, frame.getVelocity());
-			acceleration.add(t, frame.getAcceleration());
+		for(int i = 0; i < motion_profile.gettTotal()*1000; i++){
+			t = (double)i / 1000;
+			//System.out.println(t + " " + motion_profile.gettTotal());
+			MotionFrame frame1 = motion_profile.getFrameAtTime(t);
+			position.add(t,frame1.getPosition());
+			velocity.add(t, frame1.getVelocity());
+			acceleration.add(t, frame1.getAcceleration());
 		}
+
 		final XYSeriesCollection data = new XYSeriesCollection(velocity);
 		data.addSeries(position);
 		data.addSeries(acceleration);
@@ -129,5 +132,28 @@ public class Graph {
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
+	}
+
+	private class CustomColorRenderer extends XYLineAndShapeRenderer {
+
+		private Shape shape;
+		private Color color;
+
+		public CustomColorRenderer(boolean lines, boolean shapes, Shape shape, Color color) {
+			super(lines, shapes);
+			this.shape = shape;
+			this.color = color;
+		}
+
+		@Override
+		public Shape getItemShape(int row, int column) {
+			return shape;
+		}
+
+		@Override
+		public Paint getItemPaint(int row, int col) {
+			return color;
+		}
+
 	}
 }
