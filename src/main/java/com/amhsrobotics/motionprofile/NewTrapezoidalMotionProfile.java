@@ -16,6 +16,9 @@ public class NewTrapezoidalMotionProfile {
     private double maxVelocity;
     private double startPoint;
     
+    private double prevTime;
+    private double prevVelocity;
+    
     public NewTrapezoidalMotionProfile(double setpoint, double maxAcceleration, double maxDeceleration, double maxVelocity, double startVelocity, double endVelocity, double startPoint) {
         if(setpoint < 0){
             maxAcceleration = -maxAcceleration;
@@ -119,11 +122,12 @@ public class NewTrapezoidalMotionProfile {
 
         double velocity = getVelocityAtTime(t);
         double position = getPositionAtTime(t);
+        double acceleration = getAccelerationAtTime(t, velocity);
 
         if (t >= tTotal) {
-            return new MotionFrame(position + startPoint, velocity, 0, t);
+            return new MotionFrame(position + startPoint, velocity, acceleration, t);
         } else {
-            return new MotionFrame(position + startPoint, velocity, 0, t);
+            return new MotionFrame(position + startPoint, velocity, acceleration, t);
         }
     }
 
@@ -162,6 +166,21 @@ public class NewTrapezoidalMotionProfile {
 
         return output;
         
+    }
+    
+    private double getAccelerationAtTime(double t, double velocity) {
+    
+        double acceleration;
+        if(t == 0){
+            acceleration = 0;
+        }
+        else {
+            acceleration = (velocity - prevVelocity) / (t - prevTime);
+        }
+
+        this.prevVelocity = velocity;
+        this.prevTime = t;
+        return acceleration;
     }
     
     

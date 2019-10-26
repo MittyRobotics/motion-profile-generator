@@ -28,8 +28,8 @@ public class Graph {
 		final XYSeries position = new XYSeries("Position",false);
 		final XYSeries acceleration = new XYSeries("Acceleration",false);
 		double t = 0;
-		for(int i = 0; i < motion_profile.gettTotal()*50; i++){
-			t = (double)i / 50;
+		for(int i = 0; i < motion_profile.gettTotal()*100; i++){
+			t = (double)i / 100;
 			//System.out.println(t + " " + motion_profile.gettTotal());
 			MotionFrame frame1 = motion_profile.getFrameAtTime(t);
 			position.add(t,frame1.getPosition());
