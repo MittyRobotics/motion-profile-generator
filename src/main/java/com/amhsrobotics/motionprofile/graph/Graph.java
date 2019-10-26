@@ -1,7 +1,6 @@
 package com.amhsrobotics.motionprofile.graph;
 
 import com.amhsrobotics.motionprofile.MotionFrame;
-import com.amhsrobotics.motionprofile.NewTrapezoidalMotionProfile;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -22,7 +21,7 @@ public class Graph {
 
 
 
-	public Graph(final String title, NewTrapezoidalMotionProfile motion_profile) {
+	public Graph(final String title, TrapezoidalMotionProfile motion_profile) {
 
 		final XYSeries velocity = new XYSeries("Velocity",false);
 		final XYSeries position = new XYSeries("Position",false);
