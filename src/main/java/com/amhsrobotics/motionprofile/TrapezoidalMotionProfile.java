@@ -1,5 +1,12 @@
 package com.amhsrobotics.motionprofile;
 
+import com.amhsrobotics.motionprofile.datatypes.MechanismBounds;
+import com.amhsrobotics.motionprofile.datatypes.MotionFrame;
+import com.amhsrobotics.motionprofile.datatypes.MotionSegment;
+import com.amhsrobotics.motionprofile.datatypes.VelocityConstraints;
+import com.amhsrobotics.motionprofile.math.Function;
+import com.amhsrobotics.motionprofile.math.IntegralMath;
+
 public class TrapezoidalMotionProfile {
 
 
@@ -81,7 +88,9 @@ public class TrapezoidalMotionProfile {
         calculateMotionProfile();
     }
 
-
+    /**
+     * Calculates the base outline (the 3 <link>MotionSegment</>>s) of the motion profile.
+     */
     private void calculateMotionProfile() {
 
         double theoreticalMaxVelocity = Math.sqrt((maxDeceleration * (startVelocity * startVelocity) + 2 * maxAcceleration * setpoint * maxDeceleration) / (maxAcceleration + maxDeceleration));
@@ -146,6 +155,12 @@ public class TrapezoidalMotionProfile {
         decelerationSegment = new MotionSegment(tDecel, dDecel, decelerationFunction);
     }
 
+    /**
+     * Calculates the <link>MotionFrame</> at a certain time.
+     *
+     * @param t time of the motion frame
+     * @return a new <link>MotionFrame</> at time t
+     */
     public MotionFrame getFrameAtTime(double t) {
 
         double velocity = getVelocityAtTime(t);
@@ -166,7 +181,12 @@ public class TrapezoidalMotionProfile {
         }
     }
 
-
+    /**
+     * Returns the velocity of the motion profile at time t.
+     *
+     * @param t the time of the desired velocity value
+     * @return the velocity of the motion profile at time t
+     */
     private double getVelocityAtTime(double t) {
         double output;
 
@@ -182,7 +202,12 @@ public class TrapezoidalMotionProfile {
         return output;
     }
 
-
+    /**
+     * Returns the position of the motion profile at time t.
+     *
+     * @param t the time of the desired position value
+     * @return the position of the motion profile at time t
+     */
     private double getPositionAtTime(double t) {
         double output = 0;
 
@@ -201,6 +226,12 @@ public class TrapezoidalMotionProfile {
 
     }
 
+    /**
+     * Returns the acceleration of the motion profile at time t.
+     *
+     * @param t the time of the desired acceleration value
+     * @return the acceleration of the motion profile at time t
+     */
     private double getAccelerationAtTime(double t, double velocity) {
 
         double acceleration;
@@ -214,7 +245,6 @@ public class TrapezoidalMotionProfile {
         this.prevTime = t;
         return acceleration;
     }
-
 
     public double getSetpoint() {
         return setpoint;
@@ -336,6 +366,16 @@ public class TrapezoidalMotionProfile {
         this.prevVelocity = prevVelocity;
     }
 
+    /**
+     * Returns if the time inputted into the motion profile is greater than or equal to the calculated total time of the
+     * motion profile.
+     * <p>
+     * This returns if the calculated motion profile is finished, however the actual mechanism will not have exactly
+     * the same motion as the motion profile, so it is not a good practice to use this as your final check to see if the
+     * motion is finished.
+     *
+     * @return if the motion profile is finished
+     */
     public boolean isFinished() {
         return isFinished;
     }

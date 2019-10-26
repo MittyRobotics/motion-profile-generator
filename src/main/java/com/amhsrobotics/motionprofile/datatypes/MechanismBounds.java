@@ -1,4 +1,4 @@
-package com.amhsrobotics.motionprofile;
+package com.amhsrobotics.motionprofile.datatypes;
 
 public class MechanismBounds {
 	private double minPosition;

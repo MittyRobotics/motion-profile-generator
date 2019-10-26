@@ -1,19 +1,16 @@
 package com.amhsrobotics.motionprofile.graph;
 
-import com.amhsrobotics.motionprofile.MotionFrame;
+import com.amhsrobotics.motionprofile.datatypes.MotionFrame;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class Graph {

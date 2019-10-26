@@ -1,4 +1,6 @@
-package com.amhsrobotics.motionprofile;
+package com.amhsrobotics.motionprofile.datatypes;
+
+import com.amhsrobotics.motionprofile.math.Function;
 
 public class MotionSegment {
 	private double t;

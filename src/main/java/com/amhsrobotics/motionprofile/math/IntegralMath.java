@@ -1,4 +1,4 @@
-package com.amhsrobotics.motionprofile;
+package com.amhsrobotics.motionprofile.math;
 
 /**
  * https://gist.github.com/JoseRivas1998/f6642e1e8dcea665b12e0f7264d3e088#file-mainwithoutlambda-java

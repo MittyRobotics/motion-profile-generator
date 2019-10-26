@@ -1,4 +1,4 @@
-package com.amhsrobotics.motionprofile;
+package com.amhsrobotics.motionprofile.datatypes;
 
 public class VelocityConstraints {
 	private double maxAcceleration;

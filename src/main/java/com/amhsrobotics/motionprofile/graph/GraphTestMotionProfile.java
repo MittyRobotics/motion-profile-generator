@@ -1,8 +1,8 @@
 package com.amhsrobotics.motionprofile.graph;
 
-import com.amhsrobotics.motionprofile.MechanismBounds;
+import com.amhsrobotics.motionprofile.datatypes.MechanismBounds;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
-import com.amhsrobotics.motionprofile.VelocityConstraints;
+import com.amhsrobotics.motionprofile.datatypes.VelocityConstraints;
 
 public class GraphTestMotionProfile {
     public static void main(String... args){
