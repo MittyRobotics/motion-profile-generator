@@ -3,6 +3,8 @@
 [![](https://jitpack.io/v/Mittyrobotics/motion-profile-generator.svg)](https://jitpack.io/#Mittyrobotics/motion-profile-generator)
 
 Simple motion profile generator for FRC teams.
+
+JavaDocs: https://mittyrobotics.github.io/motion-profile-generator/
 ## Getting Started
 This project can be imported using jitpack.io.
 
