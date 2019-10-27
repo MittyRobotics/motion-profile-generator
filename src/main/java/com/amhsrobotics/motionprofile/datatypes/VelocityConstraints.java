@@ -11,8 +11,8 @@ public class VelocityConstraints {
 		this.maxAcceleration = Math.abs(maxAcceleration);
 		this.maxDeceleration = Math.abs(maxDeceleration);
 		this.maxVelocity = Math.abs(maxVelocity);
-		this.startVelocity = startVelocity;
-		this.endVelocity = endVelocity;
+		this.startVelocity = Math.max(Math.min(startVelocity, maxVelocity),-maxVelocity);
+		this.endVelocity = Math.max(Math.min(endVelocity, maxVelocity),-maxVelocity);
 	}
 	
 	public double getMaxAcceleration() {

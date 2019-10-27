@@ -15,7 +15,7 @@ public class GraphTestMotionProfile {
         //Current position is the current position of the mechanism, min position is the minimum position value of the mechanism (lower bound), max position is the maximum position value of the mechanism (upper bound)
         //Leave current position at 0 if you want to use relative position. Otherwise, the motion profile will be in absolute position.
         //Leave BOTH min and max position at 0 if you don't want any minimum and maximum position bounds.
-        MechanismBounds mechanismBounds = new MechanismBounds(0,0,0);
+        MechanismBounds mechanismBounds = new MechanismBounds(25,0,0);
         //Creates a new graph with the bounds. If you want multiple graphs at once, you can duplicate this code to create multiple graphs.
         new Graph("graph", new TrapezoidalMotionProfile(20,velocityConstraints,mechanismBounds));
     }
