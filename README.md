@@ -90,7 +90,7 @@ Now that the motion profile is generated, you can get the acceleration, velocity
 ```java
 double t = 2.43; 				//seconds
 
-MotionFrame frame = new MotionFrame(t);
+MotionFrame frame = motionProfile.getFrameAtTime(t);
 
 double position = frame.getPosition();		//units
 double velocity = frame.getVelocity();		//units/sec
