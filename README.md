@@ -105,5 +105,5 @@ The library has a built in class to allow you to graph a motion profile. This us
 new GraphMotionProfile(motionProfile);
 ```
 <p align="center">
-  <img width="460" height="300" src="MotionProfileGraph.PNG">
+  <img width="460" height="300" src="images/MotionProfileGraph.PNG">
 </p>
