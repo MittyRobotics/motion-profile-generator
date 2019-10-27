@@ -16,6 +16,7 @@ public class TrapezoidalMotionProfile {
     private double tTotal;
 
     private double setpoint;
+    private double adjustedSetpoint;
     private double maxAcceleration;
     private double maxDeceleration;
     private double startVelocity;
@@ -51,8 +52,7 @@ public class TrapezoidalMotionProfile {
      * @param mechanismBounds     the min and max position bounds as well as starting position
      */
     public TrapezoidalMotionProfile(double setpoint, VelocityConstraints velocityConstraints, MechanismBounds mechanismBounds) {
-
-        setpoint = setpoint - mechanismBounds.getCurrentPosition();
+        
 
         if (setpoint < 0) {
             velocityConstraints.setMaxAcceleration(-velocityConstraints.getMaxAcceleration());
@@ -69,6 +69,7 @@ public class TrapezoidalMotionProfile {
         this.minPosition = mechanismBounds.getMinPosition();
         this.maxPosition = mechanismBounds.getMaxPosition();
         this.setpoint = setpoint;
+        this.adjustedSetpoint =  setpoint - mechanismBounds.getCurrentPosition();
 
         //Initial calculation
         calculateMotionProfile();
@@ -80,9 +81,9 @@ public class TrapezoidalMotionProfile {
 
         double finalVelocity = IntegralMath.integral(f, tTotal, decelerationSegment.getF()) + IntegralMath.integral(0, c, accelerationSegment.getF()) + IntegralMath.integral(c, f, cruiseSegment.getF());
 
-        double setpointDifference = setpoint - finalVelocity;
+        double setpointDifference = adjustedSetpoint - finalVelocity;
 
-        this.setpoint = setpoint + setpointDifference;
+        this.adjustedSetpoint = adjustedSetpoint + setpointDifference;
 
         //Adjusted setpoint calculation
         calculateMotionProfile();
@@ -93,7 +94,7 @@ public class TrapezoidalMotionProfile {
      */
     private void calculateMotionProfile() {
 
-        double theoreticalMaxVelocity = Math.sqrt((maxDeceleration * (startVelocity * startVelocity) + 2 * maxAcceleration * setpoint * maxDeceleration) / (maxAcceleration + maxDeceleration));
+        double theoreticalMaxVelocity = Math.sqrt((maxDeceleration * (startVelocity * startVelocity) + 2 * maxAcceleration * adjustedSetpoint * maxDeceleration) / (maxAcceleration + maxDeceleration));
 
         if(maxVelocity < 0){
 			theoreticalMaxVelocity = -theoreticalMaxVelocity;
@@ -104,7 +105,7 @@ public class TrapezoidalMotionProfile {
         double dAccel = maxVelocity * tAccel / 2;
         double dDecel = maxVelocity * tDecel / 2;
 
-        double dCruise = this.setpoint - dAccel - dDecel;
+        double dCruise = this.adjustedSetpoint - dAccel - dDecel;
         double tCruise = dCruise / maxVelocity;
 
         double tTotal = tAccel + tDecel + tCruise;
@@ -118,7 +119,7 @@ public class TrapezoidalMotionProfile {
             dAccel = maxVelocity * tAccel / 2;
             dDecel = maxVelocity * tDecel / 2;
 
-            dCruise = this.setpoint - dAccel - dDecel;
+            dCruise = this.adjustedSetpoint - dAccel - dDecel;
             tCruise = dCruise / maxVelocity;
 
             tTotal = tAccel + tDecel + tCruise;
