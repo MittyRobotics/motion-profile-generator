@@ -104,6 +104,8 @@ The library has a built in class to allow you to graph a motion profile. This us
 ```java
 new GraphMotionProfile(motionProfile);
 ```
+Here is the output graph using the demo code above:
 <p align="center">
   <img width="460" height="300" src="images/MotionProfileGraph.PNG">
 </p>
+Dark Theme Graphs!
