@@ -1,7 +1,7 @@
 package com.amhsrobotics.motionprofile.graph;
 
-import com.amhsrobotics.motionprofile.datatypes.MechanismBounds;
 import com.amhsrobotics.motionprofile.TrapezoidalMotionProfile;
+import com.amhsrobotics.motionprofile.datatypes.MechanismBounds;
 import com.amhsrobotics.motionprofile.datatypes.VelocityConstraints;
 
 /**

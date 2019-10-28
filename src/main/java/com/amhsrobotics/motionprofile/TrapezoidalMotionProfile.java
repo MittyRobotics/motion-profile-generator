@@ -90,7 +90,7 @@ public class TrapezoidalMotionProfile {
     }
 
     /**
-     * Calculates the base outline (the 3 <link>MotionSegment</>>s) of the motion profile.
+     * Calculates the base outline (the 3 {@link MotionSegment}s) of the motion profile.
      */
     private void calculateMotionProfile() {
 
@@ -168,10 +168,10 @@ public class TrapezoidalMotionProfile {
     }
 
     /**
-     * Calculates the <link>MotionFrame</> at a certain time.
+     * Calculates the {@link MotionFrame} at a certain time.
      *
      * @param t time of the motion frame
-     * @return a new <link>MotionFrame</> at time t
+     * @return a new {@link MotionFrame} at time t
      */
     public MotionFrame getFrameAtTime(double t) {
 
