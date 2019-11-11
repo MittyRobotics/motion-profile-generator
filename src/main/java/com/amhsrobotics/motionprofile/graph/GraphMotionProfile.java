@@ -41,7 +41,7 @@ public class GraphMotionProfile {
 		final JFreeChart chart = ChartFactory.createXYLineChart(
 				"Motion Profile Example",
 				"Time (seconds)",
-				"Velocity (units/s), Position (units), Acceleration (units/s)",
+				"Velocity (units/s), Position (units), Acceleration (units/s^2)",
 				data,
 				PlotOrientation.VERTICAL,
 				true,
