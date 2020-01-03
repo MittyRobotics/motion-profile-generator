@@ -1,5 +1,7 @@
-# motion-profile-generator
-
+# ARCHIVED
+Our new motion profile generator library can be found under the [motion-prifiling](https://github.com/MittyRobotics/tko-libraries/tree/master/motion-profiling/src/main/java/com/github/mittyrobotics/motionprofile) module in our new libraries project:
+https://github.com/MittyRobotics/tko-libraries
+# OLD LIBRARY, USE AT YOUR OWN RISK
 [![](https://jitpack.io/v/Mittyrobotics/motion-profile-generator.svg)](https://jitpack.io/#Mittyrobotics/motion-profile-generator)
 
 Simple motion profile generator for FRC teams.
